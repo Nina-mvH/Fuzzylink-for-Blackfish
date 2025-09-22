@@ -23,8 +23,11 @@ get_embeddings <- function(text,
                            model = 'text-embedding-3-large',
                            dimensions = 256,
                            openai_api_key = Sys.getenv("OPENAI_API_KEY"),
-                           parallel = TRUE, 
+                           parallel = TRUE,
                            port_number = port_number) {
+
+  blackfish_url <- paste("https://localhost:", port_number, "/v1/embeddings", sep = "")
+
 
   if (model == 'mistral-embed') {
     if (Sys.getenv('MISTRAL_API_KEY') == '') {
@@ -32,7 +35,8 @@ get_embeddings <- function(text,
     }
 
     # function to format an API request
-    format_mistral_request <- function(chunk, base_url = "https://api.mistral.ai/v1/embeddings") {
+    # format_mistral_request <- function(chunk, base_url = "https://api.mistral.ai/v1/embeddings") {
+    format_mistral_request <- function(chunk, base_url = blackfish_url) {
       httr2::request(base_url) |>
         httr2::req_headers(
           "Content-Type" = 'application/json',
@@ -82,7 +86,8 @@ get_embeddings <- function(text,
     # }
 
     # format an API request to embeddings endpoint
-    format_request <- function(chunk, base_url = "https://api.openai.com/v1/embeddings") {
+    # format_request <- function(chunk, base_url = "https://api.openai.com/v1/embeddings") {
+    format_request <- function(chunk, base_url = blackfish_url) {
       # project_id <- get_project_id(openai_api_key)
 
       # ⚠️ Use a named character vector to avoid collapsing

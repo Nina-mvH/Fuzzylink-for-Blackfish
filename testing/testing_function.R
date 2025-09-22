@@ -17,4 +17,4 @@ dfB <- tribble(~name, ~state, ~hobby,
                'Biff Tannen', 'California', 'Bullying',
                'Joe Riley', 'South Carolina', 'Jogging')
 
-df <- BLfuzzylink::fuzzylink(dfA, dfB, by = 'name', record_type = 'person',blocking.variables = 'state', openai_api_key="none")
+df <- BLfuzzylink::fuzzylink(dfA, dfB, by = 'name', record_type = 'person',blocking.variables = 'state', openai_api_key="EMPTY")

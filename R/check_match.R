@@ -27,6 +27,9 @@ check_match <- function(string1, string2,
                         parallel = TRUE,
                         port_number = port_number){
 
+  blackfish_url <- paste("https://localhost:", port_number, "/v1/completions", sep = "")
+  blackfish_url_chat <- paste("https://localhost:", port_number, "/v1/chat/completions", sep = "")
+
   if(length(string1) != length(string2)){
     stop('Inputs must have the same number of elements.')
   }
@@ -64,7 +67,8 @@ check_match <- function(string1, string2,
     p <- p[string1 != string2]
 
     # build path parameters
-    base_url <- "https://api.openai.com/v1/completions"
+    # base_url <- "https://api.openai.com/v1/completions"
+    base_url <- blackfish_url
 
     headers <- c(
       "Authorization" = paste("Bearer", openai_api_key),
@@ -145,13 +149,15 @@ check_match <- function(string1, string2,
 
     # function to return a formatted API request
     format_request <- function(prompt,
-                               base_url = "https://api.openai.com/v1/chat/completions",
+                              #  base_url = "https://api.openai.com/v1/chat/completions",
+                               base_url = blackfish_url_chat,
                                api_key = openai_api_key){
 
       # if using a Mistral model, change base_url and api_key,
       # but everything else is the same!
       if(stringr::str_detect(model, 'mistral|mixtral')){
-        base_url <- 'https://api.mistral.ai/v1/chat/completions'
+        # base_url <- 'https://api.mistral.ai/v1/chat/completions'
+        base_url <- blackfish_url_chat
         api_key <- Sys.getenv('MISTRAL_API_KEY')
 
         if(api_key == ''){
