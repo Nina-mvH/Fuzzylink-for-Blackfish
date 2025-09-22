@@ -1,5 +1,5 @@
-Package: fuzzylink
-Title: Probabilistic Record Linkage Using Pretrained Text Embeddings
+Package: BLfuzzylink
+Title: Probabilistic Record Linkage Using Pretrained Text Embeddings on Blackfish
 Version: 0.2.5
 Authors@R: 
     person("Joe", "Ornstein", , "jornstein@uga.edu", role = c("aut", "cre", "cph"),
