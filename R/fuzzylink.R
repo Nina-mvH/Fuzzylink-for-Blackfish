@@ -15,7 +15,8 @@
 #' @param max_labels The maximum number of LLM prompts to submit when labeling record pairs. Defaults to 10,000
 #' @param parallel TRUE to submit API requests in parallel. Setting to FALSE can reduce rate limit errors at the expense of longer runtime.
 #' @param return_all_pairs If TRUE, returns *every* within-block record pair from dfA and dfB, not just validated pairs. Defaults to FALSE.
-#'
+#'@param port_number The port number that the Blackfish service is running on 
+#' 
 #' @return A dataframe with all rows of `dfA` joined with any matches from `dfB`
 #' @export
 #'
@@ -42,7 +43,8 @@ fuzzylink <- function(dfA, dfB,
                       fmla = match ~ sim + jw,
                       max_labels = 1e4,
                       parallel = TRUE,
-                      return_all_pairs = FALSE){
+                      return_all_pairs = FALSE,
+                      port_number = 8080){
 
   # Check for errors in inputs
   if(is.null(dfA[[by]])){
@@ -98,7 +100,8 @@ fuzzylink <- function(dfA, dfB,
                                model = embedding_model,
                                dimensions = embedding_dimensions,
                                openai_api_key = openai_api_key,
-                               parallel = parallel)
+                               parallel = parallel,
+                               port_number = port_number)
 
   ## Step 2: Get similarity matrix within each block ------------
   if(verbose){
@@ -216,7 +219,8 @@ fuzzylink <- function(dfA, dfB,
     instructions = instructions,
     model = model,
     openai_api_key = openai_api_key,
-    parallel = parallel
+    parallel = parallel,
+    port_number = port_number
   )
 
 
@@ -297,7 +301,8 @@ fuzzylink <- function(dfA, dfB,
       instructions = instructions,
       model = model,
       openai_api_key = openai_api_key,
-      parallel = parallel
+      parallel = parallel,
+      port_number = port_number
     )
 
     # refit the model and re-estimate match probabilities
@@ -435,7 +440,8 @@ fuzzylink <- function(dfA, dfB,
       instructions = instructions,
       model = model,
       openai_api_key = openai_api_key,
-      parallel = parallel
+      parallel = parallel,
+      port_number = port_number
     )
 
     # merge into df, updating match values where they differ

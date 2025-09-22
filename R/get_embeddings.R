@@ -8,7 +8,8 @@
 #' @param dimensions The dimension of the embedding vectors to return. Defaults to 256. Note that the 'mistral-embed' model will always return 1024 vectors.
 #' @param openai_api_key Your OpenAI API key. By default, looks for a system environment variable called "OPENAI_API_KEY".
 #' @param parallel TRUE to submit API requests in parallel. Setting to FALSE can reduce rate limit errors at the expense of longer runtime.
-#'
+#' @param port_number The port number that the Blackfish service is running on 
+#' 
 #' @return A matrix of embedding vectors (one per row).
 #' @export
 #'
@@ -22,7 +23,9 @@ get_embeddings <- function(text,
                            model = 'text-embedding-3-large',
                            dimensions = 256,
                            openai_api_key = Sys.getenv("OPENAI_API_KEY"),
-                           parallel = TRUE) {
+                           parallel = TRUE, 
+                           port_number = port_number) {
+
   if (model == 'mistral-embed') {
     if (Sys.getenv('MISTRAL_API_KEY') == '') {
       stop("No API key detected in system environment. Add to Renviron as MISTRAL_API_KEY.")

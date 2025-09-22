@@ -1,6 +1,5 @@
 library(tidyverse)
 
-
 dfA <- tribble(~name, ~state, ~age,
                'Joe Biden', 'Delaware', 81,
                'Donald Trump', 'New York', 77,
