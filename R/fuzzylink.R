@@ -44,7 +44,8 @@ fuzzylink <- function(dfA, dfB,
                       max_labels = 1e4,
                       parallel = TRUE,
                       return_all_pairs = FALSE,
-                      port_number = 8080){
+                      embedding_port_number = 8080,
+                      text_gen_port_number = 8081){
 
   # Check for errors in inputs
   if(is.null(dfA[[by]])){
@@ -101,7 +102,7 @@ fuzzylink <- function(dfA, dfB,
                                dimensions = embedding_dimensions,
                                openai_api_key = openai_api_key,
                                parallel = parallel,
-                               port_number = port_number)
+                               port_number = embedding_port_number)
 
   ## Step 2: Get similarity matrix within each block ------------
   if(verbose){
@@ -220,7 +221,7 @@ fuzzylink <- function(dfA, dfB,
     model = model,
     openai_api_key = openai_api_key,
     parallel = parallel,
-    port_number = port_number
+    port_number = text_gen_port_number
   )
 
 
@@ -302,7 +303,7 @@ fuzzylink <- function(dfA, dfB,
       model = model,
       openai_api_key = openai_api_key,
       parallel = parallel,
-      port_number = port_number
+      port_number = text_gen_port_number
     )
 
     # refit the model and re-estimate match probabilities
@@ -441,7 +442,7 @@ fuzzylink <- function(dfA, dfB,
       model = model,
       openai_api_key = openai_api_key,
       parallel = parallel,
-      port_number = port_number
+      port_number = text_gen_port_number
     )
 
     # merge into df, updating match values where they differ

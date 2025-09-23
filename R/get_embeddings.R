@@ -24,9 +24,11 @@ get_embeddings <- function(text,
                            dimensions = 256,
                            openai_api_key = Sys.getenv("OPENAI_API_KEY"),
                            parallel = TRUE,
-                           port_number = port_number) {
+                           port_number = 8080) {
 
-  blackfish_url <- paste("https://localhost:", port_number, "/v1/embeddings", sep = "")
+  blackfish_url <- paste("http://localhost:", port_number, "/v1/embeddings", sep = "")
+
+  print(blackfish_url)
 
 
   if (model == 'mistral-embed') {
@@ -87,6 +89,9 @@ get_embeddings <- function(text,
 
     # format an API request to embeddings endpoint
     # format_request <- function(chunk, base_url = "https://api.openai.com/v1/embeddings") {
+
+    print("not minstral")
+
     format_request <- function(chunk, base_url = blackfish_url) {
       # project_id <- get_project_id(openai_api_key)
 
@@ -108,11 +113,18 @@ get_embeddings <- function(text,
           input = chunk,
           dimensions = dimensions
         ))
+
+      # print(httr2::request)
     }
 
     # get the user's rate limits
     req <- format_request("test")
+    print(req)
+    print("------------")
+    thingy <- httr2::req_dry_run(req)
+    print(thingy)
     resp <- httr2::req_perform(req)
+    print(resp)
     # requests per minute
     rpm <- as.numeric(httr2::resp_header(resp, 'x-ratelimit-limit-requests'))
     # tokens per minute

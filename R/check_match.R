@@ -25,7 +25,7 @@ check_match <- function(string1, string2,
                         instructions = NULL,
                         openai_api_key = Sys.getenv('OPENAI_API_KEY'),
                         parallel = TRUE,
-                        port_number = port_number){
+                        port_number = 8081){
 
   blackfish_url <- paste("https://localhost:", port_number, "/v1/completions", sep = "")
   blackfish_url_chat <- paste("https://localhost:", port_number, "/v1/chat/completions", sep = "")
