@@ -81,7 +81,7 @@ fuzzylink <- function(dfA, dfB,
 
   ## Step 0: Blocking -----------------
   if(debug){
-    print("DEBUG: BEGINNING STEP 0: BLOCKING -------------------------------")
+    print("DEBUG: BEGINNING STEP 0: BLOCKING ----------------------------------------------")
   }
 
   if(!is.null(blocking.variables)){
@@ -103,7 +103,7 @@ fuzzylink <- function(dfA, dfB,
 
   ## Step 1: Get embeddings ----------------
   if(debug){
-    print("DEBUG: BEGINNING STEP 1: GETTING EMBEDDINGS ---------------------")
+    print("DEBUG: BEGINNING STEP 1: GETTING EMBEDDINGS ------------------------------------")
   }
 
   all_strings <- unique(c(dfA[[by]], dfB[[by]]))
@@ -124,7 +124,7 @@ fuzzylink <- function(dfA, dfB,
 
   ## Step 2: Get similarity matrix within each block ------------
   if(debug){
-    print("DEBUG: BEGINNING STEP 2: GETTING SIMILARITY MATRICES ------------")
+    print("DEBUG: BEGINNING STEP 2: GETTING SIMILARITY MATRICES ---------------------------")
   }
 
   if(verbose){
@@ -178,7 +178,7 @@ fuzzylink <- function(dfA, dfB,
 
   ## Step 3: Label Training Set -------------
   if(debug){
-    print("DEBUG: BEGINNING STEP 3: LABELLING TRAINING SET ------------")
+    print("DEBUG: BEGINNING STEP 3: LABELLING TRAINING SET --------------------------------")
   }
 
   if(verbose){
@@ -239,6 +239,16 @@ fuzzylink <- function(dfA, dfB,
     dplyr::slice_sample(n = n_t) |>
     dplyr::pull(index)
 
+    if (debug) {
+      print("train$match originally:")
+      print( "The unique values in the table: ")
+      print(unique(train$match))
+      print("count occurances:")
+      print(train$match, useNA = "ifany")
+      print("structure:")
+      print(str(train$match))
+    }
+
   train$match[pairs_to_label] <- check_match(
     train$A[pairs_to_label],
     train$B[pairs_to_label],
@@ -251,6 +261,15 @@ fuzzylink <- function(dfA, dfB,
     debug = debug
   )
 
+  if (debug) {
+      print("train$match sfter check_match:")
+      print( "The unique values in the table: ")
+      print(unique(train$match))
+      print("count occurances:")
+      print(train$match, useNA = "ifany")
+      print("structure:")
+      print(str(train$match))
+    }
 
   # train <- get_training_set(sim, record_type = record_type,
   #                           instructions = instructions,
@@ -259,22 +278,42 @@ fuzzylink <- function(dfA, dfB,
 
   ## Step 4: Fit model -------------------
   if(debug){
-    print("DEBUG: BEGINNING STEP 4: FITTING MODEL ------------")
+    print("DEBUG: BEGINNING STEP 4: FITTING MODEL -----------------------------------------")
   }
 
-
+  
   if(verbose){
+    if(debug){
+      print("DEBUG: verbose")
+    }
     message('Fitting model (',
         format(Sys.time(), '%X'),
         ')\n\n', sep = '')
   }
+  
   if(learner == 'ranger'){
+    if(debug){
+      print("DEBUG: learner == ranger")
+    }
     fit <- ranger::ranger(x = train |>
                             dplyr::filter(match %in% c('Yes', 'No')) |>
                             dplyr::select(sim, jw:soundex),
                           y = factor(train$match[train$match %in% c('Yes', 'No')]),
                           probability = TRUE)
   } else{
+    if(debug){
+      print("DEBUG: learner != ranger")
+    }
+    if (debug) {
+      print( "The unique values in the table: ")
+      print(unique(train$match))
+      print("count occurances:")
+      print(train$match, useNA = "ifany")
+      print("structure:")
+      print(str(train$match))
+    }
+    print("here")
+
     fit <- stats::glm(fmla,
                       data = train |>
                         dplyr::filter(match %in% c('Yes', 'No')) |>
@@ -286,7 +325,7 @@ fuzzylink <- function(dfA, dfB,
 
   # Step 5: Active Learning Loop ---------------
   if(debug){
-    print("DEBUG: BEGINNING STEP 5: ACTIVE LEARNING LOOP ------------")
+    print("DEBUG: BEGINNING STEP 5: ACTIVE LEARNING LOOP --------------------------------------")
   }
 
   i <- 1
@@ -377,7 +416,7 @@ fuzzylink <- function(dfA, dfB,
 
   ## Step 6: Recall Search -----------------
   if(debug){
-    print("DEBUG: BEGINNING STEP 6: RECALL SEARCH ------------")
+    print("DEBUG: BEGINNING STEP 6: RECALL SEARCH -----------------------------------------")
   }
 
   # 1. Identify records in A without in-block matches from B
@@ -502,7 +541,7 @@ fuzzylink <- function(dfA, dfB,
 
   ## Step 7: Return Linked Datasets -----------------
   if(debug){
-    print("DEBUG: BEGINNING STEP 7: RETURNING LINKED DATASETS ------------")
+    print("DEBUG: BEGINNING STEP 7: RETURNING LINKED DATASETS -----------------------------------------")
   }
 
   # if blocking, merge with the blocking variables prior to linking
@@ -534,7 +573,7 @@ fuzzylink <- function(dfA, dfB,
   }
 
   if(debug){
-    print("DEBUG: FUZZYLINK METHOD COMPLETE. RETURNING")
+    print("DEBUG: FUZZYLINK METHOD COMPLETE. RETURNING -------------------------------------------------------")
   }
 
   return(df)

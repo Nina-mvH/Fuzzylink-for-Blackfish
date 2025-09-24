@@ -190,7 +190,7 @@ check_match <- function(string1, string2,
           httr2::req_body_json(list(model = NULL,
                                     messages = prompt,
                                     temperature = 0.0001,
-                                    max_tokens = 1))
+                                    max_tokens = 5))
 
       } else {
 
@@ -239,9 +239,12 @@ check_match <- function(string1, string2,
       rpm <- 5*60
     } else{
       req <- format_request(format_chat_prompt(1))
-      print("found problem...")
+      # print("found problem...")
       resp <- httr2::req_perform(req)
-      print("broke")
+      if(debug){
+        print(resp)
+      }
+      
       # requests per minute
       rpm <- as.numeric(httr2::resp_header(resp, 'x-ratelimit-limit-requests'))
       # tokens per minute
@@ -250,6 +253,10 @@ check_match <- function(string1, string2,
 
     # format prompts
     prompt_list <- lapply(1:length(string1), format_chat_prompt)
+    if(debug) {
+      print("DEBUG: THE PROMPTS:")
+      print(prompt_list)
+    }
 
     # format a list of requests
     reqs <- lapply(prompt_list, format_request)
@@ -261,8 +268,18 @@ check_match <- function(string1, string2,
 
     # submit prompts in parallel (20 concurrent requests per host seems to be the optimum)
     if(parallel & stringr::str_detect(model, 'mistral|mixtral', negate = TRUE)){
+      if(debug) {
+        print("DEBUG: sumbitting prompts in parallel option 1")
+      }
       resps <- httr2::req_perform_parallel(reqs, max_active = 20)
+      if(debug) {
+        print("DEBUG: Submitting the prompts")
+        print(resps)
+      }
     } else{
+      if(debug) {
+        print("DEBUG: sumbitting prompts in parallel option 2")
+      }
       resps <- reqs |>
         lapply(httr2::req_throttle, rate = rpm / 60) |>
         httr2::req_perform_sequential()
@@ -272,6 +289,11 @@ check_match <- function(string1, string2,
     parsed <- resps |>
       lapply(httr2::resp_body_string) |>
       lapply(jsonlite::fromJSON, flatten=TRUE)
+
+    if(debug){
+      print("       THE PARSED RESPONSES:")
+      print(parsed)
+    }
 
     # get the labels associated with the highest returned log probability
     if(model %in% c('o3-mini', 'o1', 'o1-mini')){
@@ -283,6 +305,8 @@ check_match <- function(string1, string2,
   }
 
   if(debug){
+    print(print("       THE LABELS:"))
+    print(labels)
     print("DEBUG: check_match function completed. Returning.")
   }
 
