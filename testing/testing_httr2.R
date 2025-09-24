@@ -1,6 +1,6 @@
 
 
-test_embeddings <- function ( port_number = 8081, api_key = "sealsaretasty", input = "test") {
+test_embeddings <- function ( port_number = 8080, api_key = "sealsaretasty", input = "test") {
     print("FUNCTION CALL STARTING")
 
     blackfish_url <- paste("http://localhost:", port_number, "/v1/embeddings", sep = "")

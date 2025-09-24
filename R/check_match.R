@@ -27,6 +27,8 @@ check_match <- function(string1, string2,
                         parallel = TRUE,
                         port_number = 8081){
 
+  print("CHECK MATCH CALLED AND STARTED")
+
   blackfish_url <- paste("https://localhost:", port_number, "/v1/completions", sep = "")
   blackfish_url_chat <- paste("https://localhost:", port_number, "/v1/chat/completions", sep = "")
 
@@ -48,8 +50,7 @@ check_match <- function(string1, string2,
   string2 <- as.character(string2)
 
   # use the Completions endpoint if the model is a "Legacy" model
-  if(model %in% c('gpt-3.5-turbo-instruct', 'davinci-002', 'babbage-002')){
-
+  if("test" %in% c('gpt-3.5-turbo-instruct', 'davinci-002', 'babbage-002')){
     # format the prompt
     p <- paste0('Decide if the following two names refer to the same ',
                 record_type, '. ', instructions,

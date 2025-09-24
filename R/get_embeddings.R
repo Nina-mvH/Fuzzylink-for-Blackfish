@@ -90,7 +90,7 @@ get_embeddings <- function(text,
     # format an API request to embeddings endpoint
     # format_request <- function(chunk, base_url = "https://api.openai.com/v1/embeddings") {
 
-    print("not minstral")
+    # print("not minstral")
 
     format_request <- function(chunk, base_url = blackfish_url) {
       # project_id <- get_project_id(openai_api_key)
@@ -100,18 +100,15 @@ get_embeddings <- function(text,
         "Authorization" = paste("Bearer", openai_api_key),
         "Content-Type" = "application/json"
       )
-      # if (!is.null(project_id)) {
-      #   headers["OpenAI-Project"] <- project_id
-      # }
 
       httr2::request(base_url) |>
         # headers
         httr2::req_headers(!!!headers) |>
         # body
         httr2::req_body_json(list(
-          model = model,
-          input = chunk,
-          dimensions = dimensions
+          model = NULL,
+          input = chunk
+          # dimensions = dimensions
         ))
 
       # print(httr2::request)
@@ -119,12 +116,12 @@ get_embeddings <- function(text,
 
     # get the user's rate limits
     req <- format_request("test")
-    print(req)
-    print("------------")
+    # print(req)
+    # print("------------")
     thingy <- httr2::req_dry_run(req)
-    print(thingy)
+    # print(thingy)
     resp <- httr2::req_perform(req)
-    print(resp)
+    # print(resp)
     # requests per minute
     rpm <- as.numeric(httr2::resp_header(resp, 'x-ratelimit-limit-requests'))
     # tokens per minute

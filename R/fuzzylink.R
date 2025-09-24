@@ -97,12 +97,14 @@ fuzzylink <- function(dfA, dfB,
         format(Sys.time(), '%X'),
         ')\n\n', sep = '')
   }
-  embeddings <- get_embeddings(all_strings,
+  embeddings <- BLfuzzylink::get_embeddings(all_strings,
                                model = embedding_model,
                                dimensions = embedding_dimensions,
                                openai_api_key = openai_api_key,
                                parallel = parallel,
                                port_number = embedding_port_number)
+
+  print("embedding finished succesfully???")
 
   ## Step 2: Get similarity matrix within each block ------------
   if(verbose){
@@ -153,6 +155,8 @@ fuzzylink <- function(dfA, dfB,
     # compute cosine similarity matrix
     sim[[i]] <- get_similarity_matrix(embeddings, strings_A, strings_B)
   }
+
+  print("step 2 completed")
 
   ## Step 3: Label Training Set -------------
   if(verbose){
@@ -230,6 +234,7 @@ fuzzylink <- function(dfA, dfB,
   #                           model = model, openai_api_key = openai_api_key,
   #                           parallel = parallel)
 
+  print("step 3 completed")
   ## Step 4: Fit model -------------------
   if(verbose){
     message('Fitting model (',
