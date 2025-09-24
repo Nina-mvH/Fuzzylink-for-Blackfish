@@ -177,6 +177,10 @@ fuzzylink <- function(dfA, dfB,
   }
 
   ## Step 3: Label Training Set -------------
+  if(debug){
+    print("DEBUG: BEGINNING STEP 3: LABELLING TRAINING SET ------------")
+  }
+
   if(verbose){
     message('Labeling Initial Training Set (',
         format(Sys.time(), '%X'),
@@ -242,7 +246,9 @@ fuzzylink <- function(dfA, dfB,
     instructions = instructions,
     model = model,
     openai_api_key = openai_api_key,
-    parallel = parallel
+    parallel = parallel,
+    port_number = text_gen_port_num,
+    debug = debug
   )
 
 
@@ -252,6 +258,11 @@ fuzzylink <- function(dfA, dfB,
   #                           parallel = parallel)
 
   ## Step 4: Fit model -------------------
+  if(debug){
+    print("DEBUG: BEGINNING STEP 4: FITTING MODEL ------------")
+  }
+
+
   if(verbose){
     message('Fitting model (',
         format(Sys.time(), '%X'),
@@ -274,6 +285,9 @@ fuzzylink <- function(dfA, dfB,
 
 
   # Step 5: Active Learning Loop ---------------
+  if(debug){
+    print("DEBUG: BEGINNING STEP 5: ACTIVE LEARNING LOOP ------------")
+  }
 
   i <- 1
   window_size <- 5
@@ -323,7 +337,9 @@ fuzzylink <- function(dfA, dfB,
       instructions = instructions,
       model = model,
       openai_api_key = openai_api_key,
-      parallel = parallel
+      parallel = parallel,
+      port_number = text_gen_port_num,
+      debug = debug
     )
 
     # refit the model and re-estimate match probabilities
@@ -360,6 +376,9 @@ fuzzylink <- function(dfA, dfB,
   }
 
   ## Step 6: Recall Search -----------------
+  if(debug){
+    print("DEBUG: BEGINNING STEP 6: RECALL SEARCH ------------")
+  }
 
   # 1. Identify records in A without in-block matches from B
   # 2. Sample from kernel in batches of 100; label but do not update model.
@@ -461,7 +480,9 @@ fuzzylink <- function(dfA, dfB,
       instructions = instructions,
       model = model,
       openai_api_key = openai_api_key,
-      parallel = parallel
+      parallel = parallel,
+      port_number = text_gen_port_num,
+      debug = debug
     )
 
     # merge into df, updating match values where they differ
@@ -480,6 +501,9 @@ fuzzylink <- function(dfA, dfB,
   }
 
   ## Step 7: Return Linked Datasets -----------------
+  if(debug){
+    print("DEBUG: BEGINNING STEP 7: RETURNING LINKED DATASETS ------------")
+  }
 
   # if blocking, merge with the blocking variables prior to linking
   if(!is.null(blocking.variables)){
@@ -507,6 +531,10 @@ fuzzylink <- function(dfA, dfB,
     message('Done! (',
         format(Sys.time(), '%X'),
         ')\n', sep = '')
+  }
+
+  if(debug){
+    print("DEBUG: FUZZYLINK METHOD COMPLETE. RETURNING")
   }
 
   return(df)

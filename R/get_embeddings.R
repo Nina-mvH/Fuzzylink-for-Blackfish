@@ -254,5 +254,9 @@ get_embeddings <- function(text,
   embeddings <- do.call(rbind, embeddings)
   rownames(embeddings) <- text
 
+  if(debug){
+    print("DEBUG: get_embeddings function completed. Returning")
+  }
+
   return(embeddings)
 }
