@@ -4,10 +4,13 @@
 #' Get pretrained text embeddings from the OpenAI or Mistral API. Automatically batches requests to handle rate limits.
 #'
 #' @param text A character vector
-#' @param model Which embedding model to use. Defaults to 'text-embedding-3-large'.
+#' @param model Which embedding model to use. Defaults to 'text-embedding-3-large'. Set to "EMPTY" to run locally.
 #' @param dimensions The dimension of the embedding vectors to return. Defaults to 256. Note that the 'mistral-embed' model will always return 1024 vectors.
 #' @param openai_api_key Your OpenAI API key. By default, looks for a system environment variable called "OPENAI_API_KEY".
 #' @param parallel TRUE to submit API requests in parallel. Setting to FALSE can reduce rate limit errors at the expense of longer runtime.
+#' @param port_number The port number that the local embedding model is running on. Defaults to 8080. 
+#' @param debug TRUE to print various statments throughout the code to track progess. Defaults to FALSE.
+#' 
 #'
 #' @return A matrix of embedding vectors (one per row).
 #' @export
@@ -22,8 +25,79 @@ get_embeddings <- function(text,
                            model = 'text-embedding-3-large',
                            dimensions = 256,
                            openai_api_key = Sys.getenv("OPENAI_API_KEY"),
-                           parallel = TRUE) {
-  if (model == 'mistral-embed') {
+                           parallel = TRUE,
+                           port_number = 8080,
+                           debug = FALSE) {
+
+  if(debug){
+    print("DEBUG: get_embeddings function started")
+  }
+
+  if (model== "EMPTY") {
+    if(debug){
+      print("DEBUG: running embedding model locally")
+    }
+    local_url <- paste("http://localhost:", port_number, "/v1/embeddings", sep = "")
+    if(debug){
+      print(paste("DEBUG: local url:", local_url))
+    }
+
+    # format an API request to embeddings endpoint
+    format_request <- function(chunk, base_url = local_url) {
+
+      # ⚠️ Use a named character vector to avoid collapsing
+      headers <- c(
+        "Authorization" = paste("Bearer", openai_api_key),
+        "Content-Type" = "application/json"
+      )
+
+      httr2::request(base_url) |>
+        # headers
+        httr2::req_headers(!!!headers) |>
+        # body
+        httr2::req_body_json(list(
+          model = NULL,
+          input = chunk
+        ))
+    }
+
+    # get the user's rate limits
+    req <- format_request("test")
+    resp <- httr2::req_perform(req)
+    # requests per minute
+    rpm <- as.numeric(httr2::resp_header(resp, 'x-ratelimit-limit-requests'))
+    # tokens per minute
+    tpm <- as.numeric(httr2::resp_header(resp, 'x-ratelimit-limit-tokens'))
+
+    # max tokens per request is currently 8192
+    tpr <- 8192
+
+    # "effective" rpm may be smaller than rpm if we're splitting into chunks of 8192
+    rpm <- min(c(rpm, floor(tpm / tpr)))
+
+    # split the embeddings into chunks, because the OpenAI
+    # embeddings endpoint will only take so many tokens at a time
+
+    # max characters per chunk is approximately max tokens times 2 (*very* conservative)
+    max_characters <- tpr * 2
+    # Calculate cumulative sum of character lengths
+    cumulative_length <- cumsum(nchar(text))
+    # Find the indices where to split
+    split_indices <- cumulative_length %/% max_characters
+    # Split the vector based on the calculated indices
+    chunks <- split(text, split_indices)
+
+
+
+
+
+
+
+
+  } else if (model == 'mistral-embed') {
+    if(debug){
+      print("DEBUG: minstral embedding model detected")
+    }
     if (Sys.getenv('MISTRAL_API_KEY') == '') {
       stop("No API key detected in system environment. Add to Renviron as MISTRAL_API_KEY.")
     }
@@ -58,6 +132,9 @@ get_embeddings <- function(text,
     chunks <- split(text, split_indices)
 
   } else {
+    if(debug){
+      print("DEBUG: openai embedding model detected")
+    }
     if (openai_api_key == '') {
       stop("No API key detected. Set OPENAI_API_KEY in .Renviron or pass as argument.")
     }
