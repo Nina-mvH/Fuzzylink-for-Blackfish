@@ -312,7 +312,6 @@ fuzzylink <- function(dfA, dfB,
       print("structure:")
       print(str(train$match))
     }
-    print("here")
 
     fit <- stats::glm(fmla,
                       data = train |>
