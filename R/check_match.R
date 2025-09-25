@@ -283,7 +283,7 @@ check_match <- function(string1, string2,
         print("DEBUG: sumbitting prompts in parallel option 2")
       }
       resps <- reqs |>
-        lapply(httr2::req_throttle, rate = rpm / 60) |>
+        lapply(httr2::req_throttle, rate = rpm / 120) |>
         httr2::req_perform_sequential()
     }
     
