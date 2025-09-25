@@ -190,7 +190,9 @@ check_match <- function(string1, string2,
           httr2::req_body_json(list(model = NULL,
                                     messages = prompt,
                                     temperature = 0.0001,
-                                    max_tokens = 5))
+                                    max_tokens = 1,
+                                    logprobs = TRUE,
+                                    top_logprobs = 20))
 
       } else {
 

@@ -23,6 +23,9 @@ df <- BLfuzzylink::fuzzylink(dfA, dfB, by = 'name',
                              record_type = 'person',
                              blocking.variables = 'state', 
                              openai_api_key="sealsaretasty", 
-                             embedding_port_num = 8082,
-                             text_gen_port_num = 8081,
-                             debug = TRUE) #MIGHT HAVE TO ADD DIMENSIONS
+                             embedding_port_num = 8081,
+                             text_gen_port_num = 8080,
+                             debug = TRUE,
+                             embedding_dimensions = 2048)
+
+
