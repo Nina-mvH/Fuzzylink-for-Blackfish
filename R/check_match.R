@@ -152,7 +152,7 @@ check_match <- function(string1, string2,
       }
 
       p <- list()
-      p[[1]] <- list(role = 'user',
+      p[[1]] <- list(role = 'system',
                      content = paste0('Decide if the following two names refer to the same ',
                                       record_type, '. ', instructions,
                                       ## '. Misspellings, alternative names, and acronyms may be acceptable matches. ',
