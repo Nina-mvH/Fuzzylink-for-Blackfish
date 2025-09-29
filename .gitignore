@@ -4,4 +4,4 @@
 .httr-oauth
 .DS_Store
 docs
-testing/recreating-paper/
+.RData
