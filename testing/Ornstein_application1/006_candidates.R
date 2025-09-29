@@ -16,9 +16,9 @@ library(tidyverse)
 # fuzzylink
 model <- 'local'
 fmla <- match ~ sim + jw
-file_save_name <- "l2_fuzzylink_Apertus-8B-Instruct-2509.RData"
+file_save_name <- "l2_fuzzylink_Apertus-8B-Instruct-2509"
 
-load(file = paste0('testing/Ornstein_application1/', file_save_name))
+load(file = paste0('testing/Ornstein_application1/', file_save_name,'.RData'))
 
 # load hand-labeled pairs
 load('testing/Ornstein_application1/hand_labels.RData')

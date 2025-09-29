@@ -12,7 +12,7 @@ library(glue)
 # library(fuzzylink)
 library(fastLink)
 
-file_save_name <- "l2_fuzzylink_example.RData"
+file_save_name <- "l2_fuzzylink_example"
 
 ## Load and clean raw datasets -----------------
 
@@ -94,5 +94,5 @@ df <- BLfuzzylink::fuzzylink(
 )
 
 save(df,
-     file = paste0('testing/Ornstein_application1/', file_save_name))
+     file = paste0('testing/Ornstein_application1/', file_save_name,'.RData'))
 
