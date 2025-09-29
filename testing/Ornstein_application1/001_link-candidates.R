@@ -73,7 +73,6 @@ l2 <- l2 |>
 # to reproduce variants reported in the appendix, modify
 # model, fmla, or learner
 
-# model <- 'local'
 fmla <- match ~ sim + jw
 learner <- 'glm'
 
@@ -92,52 +91,8 @@ df <- BLfuzzylink::fuzzylink(
   embedding_port_num = 8081,
   text_gen_port_num = 8080,
   embedding_dimensions = 2048
-  # debug = TRUE
 )
 
 save(df,
      file = paste0('testing/Ornstein_application1/', file_save_name))
 
-
-
-
-
-
-
-
-
-## fastLink ----------------------
-
-# # clean so names are lowercase and the
-# # 'firstname' variable includes both first and middle (as in CEDA)
-# ceda <- ceda |>
-#   mutate(firstname = str_to_lower(first),
-#          lastname = str_to_lower(last),
-#          city = str_to_lower(place))
-
-# l2 <- l2 |>
-#   mutate(firstname = glue('{Voters_FirstName} {Voters_MiddleName}', .na = '') |>
-#            str_to_lower(),
-#          lastname = str_to_lower(Voters_LastName),
-#          city = str_to_lower(Residence_Addresses_City))
-
-# # partial string match on firstname and lastname, exact match on city
-# # keep everything else default (Jaro-Winkler cutoffs at 0.88 and 0.94)
-# system.time(
-#   fl.out <- fastLink(
-#     dfA = ceda,
-#     dfB = l2,
-#     varnames = c('firstname', 'lastname', 'city'),
-#     stringdist.match = c('firstname', 'lastname'),
-#     partial.match = c('firstname', 'lastname'),
-#     dedupe.matches = FALSE
-#   )
-# )
-# # approximately 55 minutes without blocking
-
-# fastLink_matches <- fastLink::getMatches(dfA = ceda,
-#                                          dfB = l2,
-#                                          fl.out)
-
-# save(fl.out, fastLink_matches, file = 'testing/l2_fastLink.RData')
-  
