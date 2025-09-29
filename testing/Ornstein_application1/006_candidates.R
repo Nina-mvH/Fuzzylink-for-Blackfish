@@ -16,8 +16,9 @@ library(tidyverse)
 # fuzzylink
 model <- 'local'
 fmla <- match ~ sim + jw
+file_save_name <- "l2_fuzzylink_example.RData"
 
-load(file = paste0('testing/Ornstein_application1/l2_fuzzylink_Mixtral-8x7B-Instruct-v0_1.RData'))
+load(file = paste0('testing/Ornstein_application1/', file_save_name))
 
 # fastLink
 # load('data/candidate-merge/l2_fastLink.RData')
