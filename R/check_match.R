@@ -38,7 +38,9 @@ check_match <- function(string1, string2,
   }
 
   if(openai_api_key == ''){
-    stop("No API key detected in system environment. You can add one using the 'openai_api_key()' function.")
+    if(model != "EMPTY") {
+      stop("No API key for model detected in system environment. You can enter it manually using the 'openai_api_key' argument.")
+    }
   }
 
   # if non-NULL, pad the instructions

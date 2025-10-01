@@ -48,12 +48,16 @@ fuzzylink <- function(dfA, dfB,
                       return_all_pairs = FALSE,
                       embedding_port_num = 8080,
                       text_gen_port_num = 8081,
+                      # name = NULL, #The 'name' of this run for saving intermediate files. Defaults to the name of the model + embedding_model
                       debug = FALSE){
 
   # Check for errors in inputs
   if(debug){
     print("DEBUG: Beginning to check for errors in inputs")
   }
+  # if(is.null(name)) {
+  #   name <- paste(model, embedding_model, sep='_')
+  # }
 
   if(is.null(dfA[[by]])){
     stop("There is no variable called \'", by, "\' in dfA.")
@@ -62,7 +66,12 @@ fuzzylink <- function(dfA, dfB,
     stop("There is no variable called \'", by, "\' in dfB.")
   }
   if(openai_api_key == ''){
-    stop("No API key detected in system environment. You can enter it manually using the 'openai_api_key' argument.")
+    if(model != "EMPTY") {
+      stop("No API key for model detected in system environment. You can enter it manually using the 'openai_api_key' argument.")
+    }
+    if(embedding_model != "EMPTY") {
+      stop("No API key for embedding detected in system environment. You can enter it manually using the 'openai_api_key' argument.")
+    }
   }
   missing_dfA <- sum(!stats::complete.cases(dfA[,c(by, blocking.variables), drop = FALSE]))
   if(missing_dfA > 0){
@@ -121,6 +130,8 @@ fuzzylink <- function(dfA, dfB,
                                parallel = parallel,
                                port_number = embedding_port_num,
                                debug = debug)
+
+  
 
   ## Step 2: Get similarity matrix within each block ------------
   if(debug){
