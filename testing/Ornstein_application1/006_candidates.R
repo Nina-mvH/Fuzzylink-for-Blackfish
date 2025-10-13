@@ -55,9 +55,9 @@ shared_A <- intersect(recall$A, fuzzylink_matches$A) #get the names that are in 
 missed <- recall %>% filter(!(A %in% shared_A)) #remove the rows from recall which fuzzylink guessed
 false_negatives <-sum(missed$match_in_L2)
 
-print("before culling:")
+print("recall before culling:")
 print(table(recall$match_in_L2, useNA = "always"))
-print("after culling:")
+print("recall after culling:")
 print(table(missed$match_in_L2, useNA = "always"))
 
 cat('Recall (fuzzylink):', true_positives / (true_positives + false_negatives), '\n')
