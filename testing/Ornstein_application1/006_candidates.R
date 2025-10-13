@@ -50,7 +50,15 @@ cat('Precision (fuzzylink):', mean(fuzzylink_matches$true_match), '\n')
 
 # recall = true_positives / (true_positives + false_negatives)
 true_positives <- sum(fuzzylink_matches$true_match)
-false_negatives <- sum(recall$match_in_L2)
+# false_negatives <- sum(recall$match_in_L2)
+shared_A <- intersect(recall$A, fuzzylink_matches$A) #get the names that are in both files (fuzzylink guessed them)
+missed <- recall %>% filter(!(A %in% shared_A)) #remove the rows from recall which fuzzylink guessed
+false_negatives <-sum(missed$match_in_L2)
+
+print("before culling:")
+print(table(recall$match_in_L2, useNA = "always"))
+print("after culling:")
+print(table(missed$match_in_L2, useNA = "always"))
 
 cat('Recall (fuzzylink):', true_positives / (true_positives + false_negatives), '\n')
 
