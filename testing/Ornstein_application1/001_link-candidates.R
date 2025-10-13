@@ -12,12 +12,12 @@ library(glue)
 # library(fuzzylink)
 library(fastLink)
 
-file_save_name <- "l2_fuzzylink_example"
+file_save_name <- "TESTING2"
 
 ## Load and clean raw datasets -----------------
 
-load('testing/Ornstein_application1/ceda.RData') # CEDA
-load('testing/Ornstein_application1/L2.RData') # selected L2 data from Alameda, Kern, and Ventura counties
+load('fuzzylink/testing/Ornstein_application1/ceda.RData') # CEDA
+load('fuzzylink/testing/Ornstein_application1/L2.RData') # selected L2 data from Alameda, Kern, and Ventura counties
 
 # for this application, just keep Alameda, Kern, and Ventura county candidates since 2016
 ceda <- ceda |>
@@ -66,7 +66,8 @@ l2 <- l2 |>
   ) |>
   rename(cntyname = County)
 
-
+save(ceda,
+     file = paste0('fuzzylink/testing/Ornstein_application1/cleanCEDA.RData'))
 ## fuzzylink ---------------
 
 # this script performs the record linkage reported in the main text;
@@ -85,12 +86,12 @@ df <- BLfuzzylink::fuzzylink(
   instructions = 'The first name comes from a list of candidates for public office in California. The second name comes from a voter registration file. Bear in mind that some candidates may run for office under a nickname or middle name, and some records may contain spelling errors.',
   fmla = fmla,
   learner = learner,
-  openai_api_key = "sealsaretasty",
+  # openai_api_key = "sealsaretasty",
   model = "EMPTY", 
   embedding_model = "EMPTY",
-  embedding_port_num = 8081,
-  text_gen_port_num = 8080,
-  embedding_dimensions = 2048
+  embedding_port_num = 8080,
+  text_gen_port_num = 8081
+  # embedding_dimensions = 2048
 )
 
 save(df,

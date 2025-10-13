@@ -16,13 +16,13 @@ library(tidyverse)
 # fuzzylink
 model <- 'local'
 fmla <- match ~ sim + jw
-file_save_name <- "l2_fuzzylink_Apertus-8B-Instruct-2509"
+file_save_name <- "l2_fuzzylink_Llama-3_3-70B-Instruct"
 
-load(file = paste0('testing/Ornstein_application1/', file_save_name,'.RData'))
+load(file = paste0('fuzzylink/testing/Ornstein_application1/', file_save_name,'.RData'))
 
 # load hand-labeled pairs
-load('testing/Ornstein_application1/hand_labels.RData')
-load(file = paste0('testing/Ornstein_application1/recall.RData'))
+load('fuzzylink/testing/Ornstein_application1/hand_labels.RData')
+load(file = paste0('fuzzylink/testing/Ornstein_application1/recall.RData'))
 
 
 ## Precision and Recall ---------------------------
@@ -35,14 +35,14 @@ fuzzylink_matches <- df |>
   mutate(exact_match = if_else(A==B, 'Yes','No')) |> 
   left_join(hand_labels) |> 
   mutate(true_match = as.numeric(exact_match == 'Yes' | hand_label == 'Yes')) |>
-  filter(!is.na(hand_label), !is.na(true_match)) #ADDED THIS TO PREVENT RESULTS = NA
+  filter(!is.na(true_match)) #ADDED THIS TO PREVENT RESULTS = NA
 
-# print("true_match summary:")
-# print(table(fuzzylink_matches$true_match, useNA = "always"))
+print("true_match summary:")
+print(table(fuzzylink_matches$true_match, useNA = "always"))
 # print("rows where true_match is NA:")
 # print(fuzzylink_matches |> filter(is.na(true_match)))
-# print("hand_label summary:")
-# print(table(fuzzylink_matches$hand_label, useNA = "always"))
+print("hand_label summary:")
+print(table(fuzzylink_matches$hand_label, useNA = "always"))
 
 
 cat('Precision (fuzzylink):', mean(fuzzylink_matches$true_match), '\n')
@@ -54,3 +54,5 @@ false_negatives <- sum(recall$match_in_L2)
 
 cat('Recall (fuzzylink):', true_positives / (true_positives + false_negatives), '\n')
 
+save(fuzzylink_matches,
+     file = paste0('fuzzylink/testing/Ornstein_application1/RESULTS.RData'))
